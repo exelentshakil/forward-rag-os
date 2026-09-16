@@ -81,17 +81,12 @@ export function Header({
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-600 to-amber-700 text-white shadow-xs font-bold">
               <ShieldCheck className="h-4 w-4" />
             </div>
-            <div className="flex flex-col text-left">
-              <div className="flex items-center gap-1.5">
-                <span className="text-sm font-bold tracking-tight text-[var(--color-text-primary)]">
-                  Forward AR
-                </span>
-                <span className="text-[11px] font-semibold px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 font-mono">
-                  Core
-                </span>
-              </div>
-              <span className="text-[10px] text-[var(--color-text-muted)] font-medium leading-none">
-                Governed Knowledge System
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm font-bold tracking-tight text-[var(--color-text-primary)]">
+                Forward AR
+              </span>
+              <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 font-mono">
+                Core
               </span>
             </div>
           </button>
