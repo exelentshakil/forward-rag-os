@@ -31,6 +31,7 @@ interface CommandMenuProps {
   onOpenChaos: () => void;
   onOpenGovernance: () => void;
   onOpenLogs: () => void;
+  onNavigate?: (sectionId: string) => void;
 }
 
 export function CommandMenu({
@@ -39,6 +40,7 @@ export function CommandMenu({
   onOpenChaos,
   onOpenGovernance,
   onOpenLogs,
+  onNavigate,
 }: CommandMenuProps) {
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -53,9 +55,13 @@ export function CommandMenu({
 
   const handleNavigate = (id: string) => {
     onOpenChange(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (onNavigate) {
+      onNavigate(id);
+    } else {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 

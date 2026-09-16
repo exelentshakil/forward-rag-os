@@ -53,8 +53,8 @@ export function Header({
     { id: 'pipeline', label: 'Architecture', icon: Activity },
     { id: 'registry', label: 'Registry', icon: Database },
     { id: 'quarantine', label: 'Quarantine', icon: Shield },
-    { id: 'chatgpt', label: 'ChatGPT AI', icon: Sparkles },
-    { id: 'specs', label: 'Dev Specs', icon: Sliders },
+    { id: 'chatgpt', label: 'ChatGPT', icon: Sparkles },
+    { id: 'specs', label: 'Specs', icon: Sliders },
   ];
 
   // Secondary navigation anchors in sleek "More" dropdown
@@ -71,7 +71,7 @@ export function Header({
     <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left Cluster: Brand Anchor + Hairline Divider + Integrated Primary Nav */}
-        <div className="flex items-center gap-3 xl:gap-4">
+        <div className="flex items-center gap-4 xl:gap-5">
           {/* Brand Logo Lockup */}
           <button
             onClick={() => onNavigate("briefing")}
@@ -93,23 +93,21 @@ export function Header({
           {/* Hairline Structural Divider */}
           <div className="hidden lg:block h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1 shrink-0" />
 
-          {/* Primary Navigation - Linear/Stripe Unboxed Clean Tabs */}
+          {/* Primary Navigation - Clean Typography Linear/Stripe Tabs */}
           <nav className="hidden lg:flex items-center gap-1">
             {primaryNavItems.map((item) => {
-              const Icon = item.icon;
               const isActive = activeSection === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => onNavigate(item.id)}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap shrink-0 ${
+                  className={`px-2.5 py-1.5 text-[13px] font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                     isActive
-                      ? 'bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white font-semibold shadow-2xs border border-slate-200 dark:border-slate-700'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60'
+                      ? 'bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white font-semibold shadow-2xs border border-slate-200/80 dark:border-slate-700/80'
+                      : 'border border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60'
                   }`}
                 >
-                  <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? 'text-amber-600 dark:text-amber-400' : 'text-slate-400 dark:text-slate-500'}`} />
-                  <span>{item.label}</span>
+                  {item.label}
                 </button>
               );
             })}
@@ -118,10 +116,10 @@ export function Header({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className={`flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap shrink-0 ${
+                  className={`flex items-center gap-1 px-2.5 py-1.5 text-[13px] font-medium rounded-md transition-colors whitespace-nowrap shrink-0 ${
                     isSecondaryActive
                       ? 'bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white font-semibold shadow-2xs border border-slate-200 dark:border-slate-700'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60'
+                      : 'border border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60'
                   }`}
                 >
                   <span>More</span>
@@ -174,7 +172,7 @@ export function Header({
               <Button
                 variant="outline"
                 size="sm"
-                className="hidden md:flex h-8 items-center gap-1.5 text-xs font-medium border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 px-2.5 whitespace-nowrap shadow-2xs"
+                className="hidden lg:flex h-8 items-center gap-1.5 text-xs font-medium border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 px-2.5 whitespace-nowrap shadow-2xs"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5 text-slate-500" />
                 <span>Diagnostics</span>

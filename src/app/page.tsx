@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { ReviewerTour } from '@/components/ReviewerTour';
 import { BentoGrid } from '@/components/BentoGrid';
@@ -25,18 +25,43 @@ export default function HomePage() {
   const [logsDrawerOpen, setLogsDrawerOpen] = useState(false);
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
 
+  // Anti-flicker programmatic navigation lock
+  const isNavigatingRef = useRef(false);
+  const navTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const handleNavigate = (sectionId: string) => {
+    // 1. Immediately pin target active state so the clicked menu item illuminates instantly
     setActiveSection(sectionId);
+
+    // 2. Lock observer updates so intermediate sections during smooth scrolling cannot cause menu flickering
+    isNavigatingRef.current = true;
+    if (navTimeoutRef.current) {
+      clearTimeout(navTimeoutRef.current);
+    }
+
     const el = document.getElementById(sectionId);
     if (el) {
-      const headerOffset = 64; // Account for the sticky header height
+      const headerOffset = 64; // Sticky header height allowance
       const elementPosition = el.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      const offsetPosition = Math.max(0, elementPosition + window.pageYOffset - headerOffset);
       window.scrollTo({
         top: offsetPosition,
         behavior: 'smooth',
       });
     }
+
+    // 3. Release observer lock once smooth scroll completes
+    const releaseLock = () => {
+      isNavigatingRef.current = false;
+      window.removeEventListener('scrollend', releaseLock);
+    };
+
+    if ('onscrollend' in window) {
+      window.addEventListener('scrollend', releaseLock, { once: true });
+    }
+
+    // Fallback timer (800ms covers standard browser smooth-scroll curve)
+    navTimeoutRef.current = setTimeout(releaseLock, 800);
   };
 
   useEffect(() => {
@@ -54,13 +79,19 @@ export default function HomePage() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
+        // Suppress scrollspy during programmatic menu click navigation to prevent intermediate tab flickering
+        if (isNavigatingRef.current) return;
+
+        const visibleEntries = entries.filter((entry) => entry.isIntersecting);
+        if (visibleEntries.length > 0) {
+          // Sort by proximity to top of viewport
+          visibleEntries.sort(
+            (a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top)
+          );
+          setActiveSection(visibleEntries[0].target.id);
+        }
       },
-      { rootMargin: '-20% 0px -60% 0px', threshold: 0.1 }
+      { rootMargin: '-15% 0px -60% 0px', threshold: 0.1 }
     );
 
     sectionIds.forEach((id) => {
@@ -68,7 +99,10 @@ export default function HomePage() {
       if (el) observer.observe(el);
     });
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (navTimeoutRef.current) clearTimeout(navTimeoutRef.current);
+    };
   }, []);
 
   return (
@@ -181,6 +215,7 @@ export default function HomePage() {
           setCommandMenuOpen(false);
           setLogsDrawerOpen(true);
         }}
+        onNavigate={handleNavigate}
       />
     </div>
   );
