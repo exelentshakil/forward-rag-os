@@ -72,64 +72,84 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[var(--color-canvas)] text-[var(--color-text-primary)]">
-      <Header
-        activeSection={activeSection}
-        onNavigate={handleNavigate}
-        onOpenChaosModal={() => setChaosModalOpen(true)}
-        onOpenGovernanceDrawer={() => setGovernanceDrawerOpen(true)}
-        onOpenLogsDrawer={() => setLogsDrawerOpen(true)}
-        onOpenCommandMenu={() => setCommandMenuOpen(true)}
+    <div className="min-h-screen bg-[var(--color-canvas)] text-[var(--color-text-primary)] relative selection:bg-amber-500/20 selection:text-amber-900 dark:selection:text-amber-200">
+      {/* Subtle architectural dot grid pattern for enterprise surface depth */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0 opacity-40 dark:opacity-20"
+        style={{
+          backgroundImage: 'radial-gradient(var(--color-border) 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+        }}
       />
 
-      <main className="w-full max-w-full min-w-0 overflow-x-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 space-y-8">
-          <section id="briefing" className="scroll-mt-20">
-            <ReviewerTour
-              onNavigate={handleNavigate}
-              onOpenChaosModal={() => setChaosModalOpen(true)}
-            />
-          </section>
+      {/* Atmospheric ambient lighting glow */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-[500px] w-[900px] rounded-full bg-gradient-to-b from-amber-200/25 via-orange-100/10 to-transparent blur-3xl dark:from-amber-950/20 dark:via-orange-950/5 dark:to-transparent" />
+      </div>
 
-          <section id="metrics" className="scroll-mt-20">
-            <BentoGrid />
-          </section>
+      <div className="relative z-10">
+        <Header
+          activeSection={activeSection}
+          onNavigate={handleNavigate}
+          onOpenChaosModal={() => setChaosModalOpen(true)}
+          onOpenGovernanceDrawer={() => setGovernanceDrawerOpen(true)}
+          onOpenLogsDrawer={() => setLogsDrawerOpen(true)}
+          onOpenCommandMenu={() => setCommandMenuOpen(true)}
+        />
 
-          <section id="pipeline" className="scroll-mt-20">
-            <ArchitectureMap />
-          </section>
+        <main className="w-full max-w-full min-w-0 overflow-x-hidden">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+            <section id="briefing" className="scroll-mt-20">
+              <ReviewerTour
+                onNavigate={handleNavigate}
+                onOpenChaosModal={() => setChaosModalOpen(true)}
+              />
+            </section>
 
-          <section id="registry" className="scroll-mt-20">
-            <ContentRegistry />
-          </section>
+            <section id="metrics" className="scroll-mt-20">
+              <BentoGrid />
+            </section>
 
-          <section id="quarantine" className="scroll-mt-20">
-            <QuarantineReviewQueue />
-          </section>
+            <section id="pipeline" className="scroll-mt-20">
+              <ArchitectureMap />
+            </section>
 
-          <section id="chatgpt" className="scroll-mt-20">
-            <ChatGptRetrievalSimulator />
-          </section>
+            <section id="registry" className="scroll-mt-20">
+              <ContentRegistry />
+            </section>
 
-          <section id="specs" className="scroll-mt-20">
-            <DeveloperSpecsExporter />
-          </section>
+            <section id="quarantine" className="scroll-mt-20">
+              <QuarantineReviewQueue />
+            </section>
 
-          <section id="analysts" className="scroll-mt-20">
-            <AnalystDirectory />
-          </section>
+            <section id="chatgpt" className="scroll-mt-20">
+              <ChatGptRetrievalSimulator />
+            </section>
 
-          <section id="roi" className="scroll-mt-20">
-            <RoiCostCalculator />
-          </section>
+            <section id="specs" className="scroll-mt-20">
+              <DeveloperSpecsExporter />
+            </section>
 
-          <section id="blueprints" className="scroll-mt-20">
-            <BlueprintExporter />
-          </section>
-        </div>
-      </main>
+            <section id="analysts" className="scroll-mt-20">
+              <AnalystDirectory />
+            </section>
 
-      <Footer />
+            <section id="roi" className="scroll-mt-20">
+              <RoiCostCalculator />
+            </section>
+
+            <section id="blueprints" className="scroll-mt-20">
+              <BlueprintExporter />
+            </section>
+          </div>
+        </main>
+
+        <Footer
+          onOpenGovernanceDrawer={() => setGovernanceDrawerOpen(true)}
+          onOpenLogsDrawer={() => setLogsDrawerOpen(true)}
+          onOpenChaosModal={() => setChaosModalOpen(true)}
+        />
+      </div>
 
       <ChaosSimulatorModal
         open={chaosModalOpen}
