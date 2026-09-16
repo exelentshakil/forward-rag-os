@@ -6,6 +6,7 @@ import {
   Activity,
   Database,
   Shield,
+  ShieldCheck,
   Sparkles,
   Sliders,
   Users,
@@ -71,27 +72,26 @@ export function Header({
     <header className="sticky top-0 z-40 w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 backdrop-blur-md">
       {/* Top 3-Zone Main Navigation Bar */}
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Zone 1: Left Brand Anchor (Max ~200px) */}
+        {/* Zone 1: Left Brand Anchor */}
         <div className="flex items-center gap-3 shrink-0">
           <button
-            onClick={() => onNavigate('briefing')}
+            onClick={() => onNavigate("briefing")}
             className="group flex items-center gap-2.5 text-left transition-opacity hover:opacity-90"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-600 to-orange-700 text-white shadow-xs">
-              <Database className="h-4 w-4" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-600 to-amber-700 text-white shadow-xs font-bold">
+              <ShieldCheck className="h-4 w-4" />
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex items-baseline gap-0.5">
+            <div className="flex flex-col text-left">
+              <div className="flex items-center gap-1.5">
                 <span className="text-sm font-bold tracking-tight text-[var(--color-text-primary)]">
                   Forward AR
                 </span>
-                <span className="text-xs font-extrabold text-amber-600 dark:text-amber-400">
+                <span className="text-[11px] font-semibold px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 font-mono">
                   Core
                 </span>
               </div>
-              <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-amber-100 dark:bg-amber-950/60 px-2.5 py-0.5 text-xs font-bold text-amber-950 dark:text-amber-200 border border-amber-300 dark:border-amber-700 whitespace-nowrap shadow-xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
-                Boundary Active
+              <span className="text-[10px] text-[var(--color-text-muted)] font-medium leading-none">
+                Governed Knowledge System
               </span>
             </div>
           </button>
@@ -176,7 +176,7 @@ export function Header({
               <Button
                 variant="outline"
                 size="sm"
-                className="hidden md:flex h-8 items-center gap-1.5 text-xs border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-panel-subtle)] px-2.5 whitespace-nowrap"
+                className="hidden md:flex h-8 items-center gap-1.5 text-xs font-medium border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 px-2.5 whitespace-nowrap shadow-xs"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
                 <span>Diagnostics</span>
@@ -225,7 +225,7 @@ export function Header({
           <Button
             size="sm"
             onClick={onOpenChaosModal}
-            className="h-8 text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white shadow-xs border border-amber-700/30 whitespace-nowrap shrink-0 px-3"
+            className="h-8 text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white shadow-xs whitespace-nowrap shrink-0 px-3"
           >
             <Zap className="h-3.5 w-3.5 mr-1" />
             <span>Test Boundaries</span>

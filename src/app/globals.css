@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   /* High-Contrast Enterprise Slate Palette (WCAG 2.2 AA / AAA Compliant) */
   --color-canvas: #f1f5f9;            /* Slate 100 - rich, solid work surface that makes white cards pop */
