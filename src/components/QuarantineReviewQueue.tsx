@@ -129,7 +129,7 @@ export function QuarantineReviewQueue() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--color-border)] pb-4 mb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-700 border border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800 whitespace-nowrap shrink-0">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-100 dark:bg-red-950/60 px-3 py-1 text-xs font-bold text-red-950 dark:text-red-200 border border-red-300 dark:border-red-700 shadow-xs whitespace-nowrap shrink-0">
               <ShieldAlert className="h-3 w-3" />
               Air-Gapped Quarantine & De-ID Queue
             </span>

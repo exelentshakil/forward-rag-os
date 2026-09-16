@@ -176,7 +176,7 @@ export async function syncArticleToAlgolia(article) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--color-border)] pb-4 mb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800 whitespace-nowrap shrink-0">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 px-3 py-1 text-xs font-bold text-indigo-950 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-700 shadow-xs whitespace-nowrap shrink-0">
               <Sliders className="h-3 w-3" />
               Technical Implementation Specs & Acceptance
             </span>

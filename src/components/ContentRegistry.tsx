@@ -152,7 +152,7 @@ export function ContentRegistry() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--color-border)] pb-4 mb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-800 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800 whitespace-nowrap shrink-0">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 dark:bg-amber-950/60 px-3 py-1 text-xs font-bold text-amber-950 dark:text-amber-200 border border-amber-300 dark:border-amber-700 shadow-xs whitespace-nowrap shrink-0">
               <Database className="h-3 w-3" />
               Governed Content Registry
             </span>
