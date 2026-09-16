@@ -255,13 +255,13 @@ export async function syncArticleToAlgolia(article) {
 
       {/* Code Display or Acceptance Criteria */}
       {activeTab === 'wix' && (
-        <div className="rounded-xl bg-[var(--color-panel-subtle)] border border-[var(--color-border)] p-4 font-mono text-xs overflow-x-auto text-[var(--color-text-primary)] leading-relaxed">
+        <div className="rounded-xl bg-slate-950 border border-slate-800 p-4 font-mono text-xs overflow-x-auto text-slate-200 shadow-inner leading-relaxed">
           <pre>{wixVeloSpec}</pre>
         </div>
       )}
 
       {activeTab === 'monday' && (
-        <div className="rounded-xl bg-[var(--color-panel-subtle)] border border-[var(--color-border)] p-4 font-mono text-xs overflow-x-auto text-[var(--color-text-primary)] leading-relaxed">
+        <div className="rounded-xl bg-slate-950 border border-slate-800 p-4 font-mono text-xs overflow-x-auto text-slate-200 shadow-inner leading-relaxed">
           <pre>{mondayZapierSpec}</pre>
         </div>
       )}

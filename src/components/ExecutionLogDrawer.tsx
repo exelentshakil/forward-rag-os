@@ -2,31 +2,34 @@
 
 import React, { useState } from 'react';
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from '@/components/ui/sheet';
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import {
   Terminal,
   Activity,
-  Trash2,
-  Download,
-  Filter,
   CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  Filter,
+  RefreshCw,
   Clock,
-  Cpu,
+  Database,
   Layers,
   Send,
+  Shield,
+  Lock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface LogEntry {
   id: string;
   timestamp: string;
-  stage: 'Ingestion' | 'Dedupe' | 'AI Inference' | 'Slack Dispatch';
-  status: '200 OK' | 'Filtered' | 'Blocked' | 'Dispatched';
+  stage: 'Ingestion' | 'Privacy Shield' | 'De-ID Scrubbing' | 'ChatGPT Sync';
+  status: '200 OK' | 'Quarantined' | 'Sanitized' | 'Synced';
   details: string;
   durationMs: number;
 }
@@ -34,51 +37,51 @@ interface LogEntry {
 const INITIAL_LOGS: LogEntry[] = [
   {
     id: 'log_01',
-    timestamp: '16:12:04.218',
-    stage: 'Slack Dispatch',
-    status: 'Dispatched',
-    details: 'Block Kit card posted to #gear-leads-alerts for u/analog_delay_junkie (Score: 10/10)',
-    durationMs: 84,
+    timestamp: '16:14:02.110',
+    stage: 'ChatGPT Sync',
+    status: 'Synced',
+    details: 'ChatGPT Retrieval Action served query citing [DocID: WIX-LIB-AR-104] with 100% verified attribution',
+    durationMs: 380,
   },
   {
     id: 'log_02',
-    timestamp: '16:12:04.134',
-    stage: 'AI Inference',
-    status: '200 OK',
-    details: 'OpenAI gpt-4o-mini classified "actively asking for alternatives" with OpportunityScore 10',
-    durationMs: 142,
+    timestamp: '16:13:45.320',
+    stage: 'Privacy Shield',
+    status: 'Quarantined',
+    details: 'Adversarial query intercepted: CONFIDENTIAL_CLIENT_ISOLATION enforced on raw Monday CRM notes',
+    durationMs: 14,
   },
   {
     id: 'log_03',
-    timestamp: '16:12:03.992',
-    stage: 'Dedupe',
-    status: '200 OK',
-    details: 'Hash sha256:7f9a2b8c91 verified unique in 14-day LRU cache',
-    durationMs: 3,
+    timestamp: '16:11:12.890',
+    stage: 'De-ID Scrubbing',
+    status: 'Sanitized',
+    details: 'Apollo inbound lead scrubbed: client entity masked to [Client Alpha], ACV $120k masked to [Tier ACV]',
+    durationMs: 112,
   },
   {
     id: 'log_04',
-    timestamp: '16:12:03.989',
+    timestamp: '16:08:22.040',
     stage: 'Ingestion',
     status: '200 OK',
-    details: 'Polled r/GuitarPedals new.json (HTTP 200). 1 post matched trigger "Reverb • fee increase"',
-    durationMs: 310,
+    details: 'Wix Velo hook onArticlePublish() synced updated article to Algolia index with DocID [WIX-LIB-AR-118]',
+    durationMs: 18,
   },
   {
     id: 'log_05',
-    timestamp: '16:10:15.820',
-    stage: 'Dedupe',
-    status: 'Blocked',
-    details: 'Duplicate post detected: sha256:7f9a2b8c91 exists. Halting execution at Node 3.',
-    durationMs: 2,
+    timestamp: '16:04:10.510',
+    stage: 'Privacy Shield',
+    status: 'Quarantined',
+    details: 'Monday Board A webhook tagged raw sales notes as RESTRICTED_ISOLATED. Diverted from ChatGPT index.',
+    durationMs: 8,
   },
   {
     id: 'log_06',
-    timestamp: '16:05:00.112',
-    stage: 'AI Inference',
-    status: 'Filtered',
-    details: 'Classified post as "neutral / general discussion" with OpportunityScore 3. Below threshold (7). Dropped.',
-    durationMs: 118,
+    timestamp: '16:00:00.120',
+    stage: 'ChatGPT Sync',
+    status: 'Synced',
+    details: 'Senior Architect approval webhook promoted de-identified Gartner briefing deck to Content Registry Board B',
+    durationMs: 240,
   },
 ];
 
@@ -89,104 +92,128 @@ interface ExecutionLogDrawerProps {
 
 export function ExecutionLogDrawer({ open, onOpenChange }: ExecutionLogDrawerProps) {
   const [logs, setLogs] = useState<LogEntry[]>(INITIAL_LOGS);
-  const [filter, setFilter] = useState<string>('All');
+  const [filter, setFilter] = useState<string>('ALL');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const filteredLogs = logs.filter((l) => filter === 'All' || l.stage === filter);
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      const newEntry: LogEntry = {
+        id: `log_${Date.now().toString().slice(-4)}`,
+        timestamp: new Date().toTimeString().split(' ')[0] + '.' + Math.floor(Math.random() * 900 + 100),
+        stage: 'ChatGPT Sync',
+        status: 'Synced',
+        details: `Simulated live telemetry: Verified DocID citation grounded response delivered in ${Math.floor(Math.random() * 200 + 180)}ms`,
+        durationMs: Math.floor(Math.random() * 150 + 100),
+      };
+      setLogs((prev) => [newEntry, ...prev.slice(0, 15)]);
+      setIsRefreshing(false);
+    }, 400);
+  };
+
+  const filteredLogs = logs.filter((log) => {
+    if (filter === 'ALL') return true;
+    return log.stage === filter;
+  });
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-xl overflow-y-auto bg-[var(--color-surface)] border-l border-[var(--color-border)] p-6 text-[var(--color-text-primary)]">
-        <SheetHeader className="border-b border-[var(--color-border)] pb-4 mb-4">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-3xl bg-[var(--color-surface)] border border-[var(--color-border)] p-5 sm:p-6 text-[var(--color-text-primary)]">
+        <DialogHeader className="border-b border-[var(--color-border)] pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-800 dark:bg-slate-900 dark:text-slate-200">
                 <Terminal className="h-3.5 w-3.5 text-slate-600 dark:text-slate-400" />
-                Live Execution Traces
+                Live Ingestion & Governance Logs
               </span>
-              <span className="text-xs text-emerald-600 font-mono font-bold">
-                ● Connected
+              <span className="text-xs text-[var(--color-text-muted)] font-mono">
+                Real-Time Event Stream
               </span>
             </div>
 
             <Button
               size="sm"
-              variant="ghost"
-              onClick={() => setLogs([])}
-              className="h-7 text-xs text-[var(--color-text-muted)] hover:text-red-600 px-2"
+              variant="outline"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="h-7 text-xs border-[var(--color-border)]"
             >
-              <Trash2 className="h-3 w-3 mr-1" />
-              <span>Clear</span>
+              <RefreshCw className={`h-3 w-3 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Poll Now
             </Button>
           </div>
-          <SheetTitle className="text-lg font-bold">
-            Real-Time Pipeline Event Log
-          </SheetTitle>
-          <SheetDescription className="text-xs text-[var(--color-text-secondary)]">
-            End-to-end execution logs capturing community scraping, hash deduplication, LLM inference latency, and Slack Block Kit dispatches.
-          </SheetDescription>
-        </SheetHeader>
+          <DialogTitle className="text-lg font-bold mt-2">
+            Execution Log & Audit Trail
+          </DialogTitle>
+          <DialogDescription className="text-xs text-[var(--color-text-secondary)]">
+            Trace automated webhook executions across Wix CMS, Algolia, Monday.com, and ChatGPT Business Company Knowledge retrieval.
+          </DialogDescription>
+        </DialogHeader>
 
-        {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 mb-4 text-xs font-mono overflow-x-auto pb-1">
-          {['All', 'Ingestion', 'Dedupe', 'AI Inference', 'Slack Dispatch'].map((stage) => (
+        {/* Filter Stage Buttons */}
+        <div className="flex items-center gap-1.5 py-2 border-b border-[var(--color-border)]">
+          <Filter className="h-3.5 w-3.5 text-[var(--color-text-muted)] mr-1" />
+          {['ALL', 'Ingestion', 'Privacy Shield', 'De-ID Scrubbing', 'ChatGPT Sync'].map((st) => (
             <button
-              key={stage}
-              onClick={() => setFilter(stage)}
-              className={`px-2.5 py-1 rounded-md transition-all whitespace-nowrap ${
-                filter === stage
-                  ? 'bg-emerald-600 text-white font-bold'
-                  : 'bg-[var(--color-panel-subtle)] text-[var(--color-text-secondary)] hover:bg-[var(--color-border)]'
+              key={st}
+              onClick={() => setFilter(st)}
+              className={`px-2.5 py-1 text-xs rounded-md transition-colors ${
+                filter === st
+                  ? 'bg-amber-600 text-white font-semibold'
+                  : 'bg-[var(--color-panel-subtle)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-[var(--color-border)]'
               }`}
             >
-              {stage}
+              {st}
             </button>
           ))}
         </div>
 
         {/* Log Entries List */}
-        <div className="space-y-2.5 font-mono text-xs">
-          {filteredLogs.length === 0 ? (
-            <p className="text-[var(--color-text-muted)] italic text-center py-8">
-              No log entries match the selected filter.
-            </p>
-          ) : (
-            filteredLogs.map((log) => (
-              <div
-                key={log.id}
-                className="rounded-xl border border-[var(--color-border)] bg-[var(--color-panel-subtle)] p-3 space-y-1.5"
-              >
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-[var(--color-text-primary)]">
-                      [{log.stage}]
-                    </span>
-                    <span
-                      className={`px-1.5 py-0.2 rounded text-xs font-semibold ${
-                        log.status === 'Dispatched' || log.status === '200 OK'
-                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                          : log.status === 'Blocked'
-                          ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
-                          : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
-                      }`}
-                    >
-                      {log.status}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-[var(--color-text-muted)] text-xs">
-                    <span>{log.durationMs}ms</span>
-                    <span>{log.timestamp}</span>
-                  </div>
+        <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+          {filteredLogs.map((log) => (
+            <div
+              key={log.id}
+              className="rounded-xl border border-[var(--color-border)] bg-[var(--color-panel-subtle)] p-3 text-xs font-mono space-y-1 hover:bg-[var(--color-surface)] transition-all"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-[var(--color-text-muted)]">{log.timestamp}</span>
+                  <span className="font-bold text-[var(--color-text-primary)]">[{log.stage}]</span>
                 </div>
-
-                <p className="text-[var(--color-text-secondary)] leading-relaxed">
-                  {log.details}
-                </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-[var(--color-text-muted)]">{log.durationMs}ms</span>
+                  <span
+                    className={`px-1.5 py-0.5 rounded text-xs font-bold ${
+                      log.status === '200 OK' || log.status === 'Synced'
+                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                        : log.status === 'Sanitized'
+                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
+                        : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                    }`}
+                  >
+                    {log.status}
+                  </span>
+                </div>
               </div>
-            ))
-          )}
+              <p className="text-[var(--color-text-secondary)] font-sans text-xs pt-0.5">
+                {log.details}
+              </p>
+            </div>
+          ))}
         </div>
-      </SheetContent>
-    </Sheet>
+
+        <div className="flex justify-between items-center pt-2 border-t border-[var(--color-border)] text-xs text-[var(--color-text-muted)]">
+          <span>Buffer: 1,000 events retained</span>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            className="text-xs border-[var(--color-border)]"
+          >
+            Close
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

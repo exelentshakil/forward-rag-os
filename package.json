@@ -2,7 +2,7 @@
   "name": "forward-rag-os",
   "version": "1.0.0",
   "private": true,
-  "description": "Modular Social-Listening & Lead Discovery MVP for Musical Gear & Marketplace Intelligence",
+  "description": "Forward AR Core: Enterprise Governed Knowledge Base, Privacy Blast Shield & ChatGPT Business Retrieval Architecture",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

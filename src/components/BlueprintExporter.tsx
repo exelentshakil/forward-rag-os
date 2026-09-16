@@ -15,96 +15,105 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const SAMPLE_N8N_BLUEPRINT = {
-  name: 'GearSignal-Social-Listening-MVP',
+const FORWARD_AR_N8N_BLUEPRINT = {
+  name: 'Forward-AR-Governed-Knowledge-RAG-v1',
   nodes: [
     {
       id: 'node_1',
-      name: 'Centralized Config Loader',
-      type: 'n8n-nodes-base.googleSheets',
+      name: 'Monday.com Webhook (Board A: Raw Quarantine)',
+      type: 'n8n-nodes-base.mondayCom',
       parameters: {
-        operation: 'read',
-        sheetId: '={{ $env.GEARSIGNAL_CONFIG_SHEET_ID }}',
-        range: 'Keywords_Triggers!A:E',
+        operation: 'watchItemCreated',
+        boardId: '={{ $env.MONDAY_QUARANTINE_BOARD_ID }}',
+        columns: ['source', 'rep', 'raw_content', 'client_entity'],
       },
     },
     {
       id: 'node_2',
-      name: 'Multi-Community Poller',
-      type: 'n8n-nodes-base.httpRequest',
-      parameters: {
-        method: 'GET',
-        urls: [
-          'https://www.reddit.com/r/GuitarPedals/new.json?limit=25',
-          'https://www.thegearpage.net/board/index.php?forums/guitars.19/index.rss',
-          'https://www.talkbass.com/forums/for-sale-bass-guitars.126/index.rss',
-        ],
-      },
-    },
-    {
-      id: 'node_3',
-      name: 'SHA-256 Deduplication Cache',
-      type: 'n8n-nodes-base.crypto',
-      parameters: {
-        action: 'hash',
-        algorithm: 'sha256',
-        value: '={{ $json.platform + ":" + $json.id }}',
-      },
-    },
-    {
-      id: 'node_4',
-      name: 'Dual-Provider AI Classifier',
-      type: 'n8n-nodes-base.openAi',
-      parameters: {
-        model: 'gpt-4o-mini',
-        temperature: 0.2,
-        systemPrompt: '={{ $node["Centralized Config Loader"].json.system_prompt }}',
-      },
-    },
-    {
-      id: 'node_5',
-      name: 'Opportunity Filter (Score >= 7)',
+      name: 'Privacy Blast Shield (Entity & ACV Isolation)',
       type: 'n8n-nodes-base.if',
       parameters: {
         conditions: {
-          number: [
+          string: [
             {
-              value1: '={{ $json.opportunity_score }}',
-              operation: 'largerEqual',
-              value2: 7,
+              value1: '={{ $json.confidentiality }}',
+              operation: 'equal',
+              value2: 'RESTRICTED_ISOLATED',
             },
           ],
         },
       },
     },
     {
-      id: 'node_6',
-      name: 'Slack Block Kit Dispatcher',
-      type: 'n8n-nodes-base.slack',
+      id: 'node_3',
+      name: 'Securiti AI Firewall (PII & Client De-ID Scrubber)',
+      type: 'n8n-nodes-base.function',
       parameters: {
-        channel: '#gear-leads-alerts',
-        blocks: '={{ $json.block_kit_payload }}',
+        functionCode: '// Redact client entity, personal emails, phone numbers, and contract ACVs\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    scrubbed_content: scrubPiiAndEntities(item.json.raw_content),\n    is_deidentified: true,\n    status: "PENDING_SENIOR_APPROVAL"\n  }\n}));',
+      },
+    },
+    {
+      id: 'node_4',
+      name: 'Senior Architect Human-in-the-Loop Approval',
+      type: 'n8n-nodes-base.mondayCom',
+      parameters: {
+        operation: 'watchColumnChange',
+        boardId: '={{ $env.MONDAY_QUARANTINE_BOARD_ID }}',
+        columnId: 'senior_architect_approval',
+        expectedValue: 'APPROVED_FOR_REGISTRY',
+      },
+    },
+    {
+      id: 'node_5',
+      name: 'Content Registry Promotion & Wix Velo Hook',
+      type: 'n8n-nodes-base.httpRequest',
+      parameters: {
+        method: 'POST',
+        url: 'https://www.forwardar.com/_functions/syncApprovedSharedKnowledge',
+        headers: { 'Authorization': 'Bearer ={{ $env.WIX_VELO_SECRET_KEY }}' },
+        body: {
+          docId: '={{ $json.docId }}',
+          title: '={{ $json.title }}',
+          confidentiality: 'INTERNAL_APPROVED',
+          attribution: '={{ $json.attribution }}',
+          reviewer: '={{ $json.senior_reviewer }}',
+          reviewDate: '={{ $now.format("yyyy-MM-dd") }}',
+        },
+      },
+    },
+    {
+      id: 'node_6',
+      name: 'ChatGPT Business Knowledge Sync & DocID Attribution',
+      type: 'n8n-nodes-base.openAi',
+      parameters: {
+        operation: 'createFileOrIndex',
+        vectorStoreId: '={{ $env.CHATGPT_COMPANY_KNOWLEDGE_STORE_ID }}',
+        metadata: {
+          docId: '={{ $json.docId }}',
+          confidentiality: 'INTERNAL_APPROVED',
+          permission: 'ALL_STAFF',
+        },
       },
     },
   ],
   connections: {
-    'Centralized Config Loader': { main: [[{ node: 'Multi-Community Poller', type: 'main', index: 0 }]] },
-    'Multi-Community Poller': { main: [[{ node: 'SHA-256 Deduplication Cache', type: 'main', index: 0 }]] },
-    'SHA-256 Deduplication Cache': { main: [[{ node: 'Dual-Provider AI Classifier', type: 'main', index: 0 }]] },
-    'Dual-Provider AI Classifier': { main: [[{ node: 'Opportunity Filter (Score >= 7)', type: 'main', index: 0 }]] },
-    'Opportunity Filter (Score >= 7)': { main: [[{ node: 'Slack Block Kit Dispatcher', type: 'main', index: 0 }]] },
+    'Monday.com Webhook (Board A: Raw Quarantine)': { main: [[{ node: 'Privacy Blast Shield (Entity & ACV Isolation)', type: 'main', index: 0 }]] },
+    'Privacy Blast Shield (Entity & ACV Isolation)': { main: [[{ node: 'Securiti AI Firewall (PII & Client De-ID Scrubber)', type: 'main', index: 0 }]] },
+    'Securiti AI Firewall (PII & Client De-ID Scrubber)': { main: [[{ node: 'Senior Architect Human-in-the-Loop Approval', type: 'main', index: 0 }]] },
+    'Senior Architect Human-in-the-Loop Approval': { main: [[{ node: 'Content Registry Promotion & Wix Velo Hook', type: 'main', index: 0 }]] },
+    'Content Registry Promotion & Wix Velo Hook': { main: [[{ node: 'ChatGPT Business Knowledge Sync & DocID Attribution', type: 'main', index: 0 }]] },
   },
 };
 
-const SAMPLE_MAKE_BLUEPRINT = {
-  name: 'GearSignal-Make-Modular-MVP',
+const FORWARD_AR_MAKE_BLUEPRINT = {
+  name: 'Forward-AR-Governed-Knowledge-Make-v1',
   flow: [
-    { id: 1, module: 'google-sheets:watchRows', label: '1. Ingest Keywords & Triggers' },
-    { id: 2, module: 'http:makeRequest', label: '2. Scrape r/GuitarPedals & TheGearPage' },
-    { id: 3, module: 'data-store:checkRecord', label: '3. Dedupe by Post URL / SHA256' },
-    { id: 4, module: 'openai:createChatCompletion', label: '4. gpt-4o-mini Categorize & Score 1-10' },
-    { id: 5, module: 'router:filter', label: '5. Filter Qualified Leads (Score >= 7)' },
-    { id: 6, module: 'slack:postMessage', label: '6. Send Block Kit Alert to #gear-leads-alerts' },
+    { id: 1, module: 'monday:watchBoardItems', label: '1. Watch Monday Board A (Quarantine Queue)' },
+    { id: 2, module: 'security:firewallDeId', label: '2. Regex & NER PII / Entity Masking Microservice' },
+    { id: 3, module: 'router:filter', label: '3. Human-in-the-Loop Senior Approval Gate' },
+    { id: 4, module: 'monday:createItem', label: '4. Promote to Board B (Content Registry)' },
+    { id: 5, module: 'wix:veloWebhook', label: '5. Trigger Wix Velo afterUpdate Algolia Index Hook' },
+    { id: 6, module: 'chatgpt:knowledgeSync', label: '6. POST /api/retrieve Gateway with DocID Tagging' },
   ],
 };
 
@@ -114,8 +123,8 @@ export function BlueprintExporter() {
 
   const activeJson =
     selectedFormat === 'n8n'
-      ? JSON.stringify(SAMPLE_N8N_BLUEPRINT, null, 2)
-      : JSON.stringify(SAMPLE_MAKE_BLUEPRINT, null, 2);
+      ? JSON.stringify(FORWARD_AR_N8N_BLUEPRINT, null, 2)
+      : JSON.stringify(FORWARD_AR_MAKE_BLUEPRINT, null, 2);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(activeJson);
@@ -128,7 +137,7 @@ export function BlueprintExporter() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `gearsignal-${selectedFormat}-workflow.json`;
+    a.download = `forward-ar-${selectedFormat}-workflow.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -146,7 +155,7 @@ export function BlueprintExporter() {
               Turnkey Deliverables
             </span>
             <span className="text-xs text-[var(--color-text-muted)] font-mono hidden sm:inline">
-              Core Requirement 8 • 100% Client Account Ownership
+              100% Client Account Ownership • Zero Vendor Lock-in
             </span>
           </div>
           <h3 className="text-base sm:text-lg font-bold text-[var(--color-text-primary)]">
@@ -185,16 +194,16 @@ export function BlueprintExporter() {
       </div>
 
       {/* Code Display & Download Controls */}
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-panel-subtle)] overflow-hidden">
+      <div className="rounded-xl border border-[var(--color-border)] bg-slate-950 overflow-hidden shadow-inner">
         {/* Sub-bar */}
-        <div className="flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5">
+        <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-4 py-2.5">
           <div className="flex items-center gap-2">
-            <Code2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-            <span className="text-xs font-mono font-bold text-[var(--color-text-primary)]">
-              {selectedFormat === 'n8n' ? 'gearsignal-n8n-workflow.json' : 'gearsignal-make-blueprint.json'}
+            <Code2 className="h-4 w-4 text-amber-500" />
+            <span className="text-xs font-mono font-bold text-slate-200">
+              {selectedFormat === 'n8n' ? 'forward-ar-n8n-workflow.json' : 'forward-ar-make-blueprint.json'}
             </span>
-            <span className="text-xs text-[var(--color-text-muted)] font-mono">
-              (v1.2.0 • 6 Nodes)
+            <span className="text-xs text-slate-400 font-mono">
+              (v1.0.0 • 6 Governed Nodes)
             </span>
           </div>
 
@@ -203,11 +212,11 @@ export function BlueprintExporter() {
               size="sm"
               variant="outline"
               onClick={handleCopy}
-              className="h-7 text-xs border-[var(--color-border)] whitespace-nowrap shrink-0"
+              className="h-7 text-xs border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white whitespace-nowrap shrink-0"
             >
               {copied ? (
                 <>
-                  <Check className="h-3 w-3 mr-1 text-emerald-600" />
+                  <Check className="h-3 w-3 mr-1 text-emerald-400" />
                   <span>Copied!</span>
                 </>
               ) : (
@@ -220,7 +229,7 @@ export function BlueprintExporter() {
             <Button
               size="sm"
               onClick={handleDownload}
-              className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white whitespace-nowrap shrink-0"
+              className="h-7 text-xs bg-amber-600 hover:bg-amber-700 text-white whitespace-nowrap shrink-0"
             >
               <Download className="h-3 w-3 mr-1" />
               <span>Download .json</span>
@@ -229,16 +238,16 @@ export function BlueprintExporter() {
         </div>
 
         {/* Code Body */}
-        <div className="p-4 max-h-64 overflow-y-auto font-mono text-xs text-[var(--color-text-secondary)] leading-relaxed">
+        <div className="p-4 max-h-64 overflow-y-auto font-mono text-xs text-slate-300 leading-relaxed">
           <pre>{activeJson}</pre>
         </div>
       </div>
 
       {/* 3-Step Import Instructions */}
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-panel-subtle)] p-3">
           <div className="flex items-center gap-2 text-xs font-bold text-[var(--color-text-primary)] mb-1">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-mono text-xs">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-mono text-xs">
               1
             </span>
             <span>Import to Workspace</span>
@@ -248,27 +257,27 @@ export function BlueprintExporter() {
           </p>
         </div>
 
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-panel-subtle)] p-3">
           <div className="flex items-center gap-2 text-xs font-bold text-[var(--color-text-primary)] mb-1">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-mono text-xs">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-mono text-xs">
               2
             </span>
             <span>Connect Credentials</span>
           </div>
           <p className="text-xs text-[var(--color-text-secondary)]">
-            Plug in your private OpenAI/Gemini API key, your Google Sheets ID, and your Slack incoming webhook URL.
+            Plug in your private Monday.com API token, your Wix Velo endpoint secret, and your ChatGPT Business retrieval OAuth credentials.
           </p>
         </div>
 
-        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-panel-subtle)] p-3">
           <div className="flex items-center gap-2 text-xs font-bold text-[var(--color-text-primary)] mb-1">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-mono text-xs">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-mono text-xs">
               3
             </span>
-            <span>Activate 15m Schedule</span>
+            <span>Activate Privacy Shield</span>
           </div>
           <p className="text-xs text-[var(--color-text-secondary)]">
-            Toggle the workflow to <strong>Active</strong>. The cron timer will poll r/GuitarPedals, TheGearPage, and TalkBass every 15 minutes.
+            Toggle the workflow to <strong>Active</strong>. All Apollo/CRM leads will route into Quarantine Board A, enforcing zero automated leakage to ChatGPT.
           </p>
         </div>
       </div>
