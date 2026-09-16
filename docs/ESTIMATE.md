@@ -1,5 +1,5 @@
 # Production Scope & Formal Estimate
-## Forward AR Core: Governed Knowledge Base & ChatGPT Retrieval System
+## Forward AR Core: Governed Knowledge Base
 
 **Reference Number:** Ref #BS-2026-FARD-01  
 **Client:** Forward AR Experts (Kennesaw, GA, USA, EST)  

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Production Scope & Formal Estimate Generator
-Forward AR Core: Governed Knowledge Base & ChatGPT Retrieval System
+Forward AR Core: Governed Knowledge Base
 Client: Forward AR Experts (Kennesaw, GA, USA, EST)
 Two-Track Engagement Model:
 - Track 1: 48-Hour Architecture Sprint @ $55.00/hr = $2,640.00
@@ -483,7 +483,7 @@ def build_estimate():
   <div class="header">
     <div class="header-left">
       <div class="brand-title">BarakahSoft LLC • Systems Architecture • Ref #BS-2026-FARD-01</div>
-      <h1>Forward AR Core • Governed Knowledge Base &amp; ChatGPT Retrieval System</h1>
+      <h1>Forward AR Core • Governed Knowledge Base</h1>
       <p class="subtitle">Wix Velo Sync • Algolia Metadata Catalog • Air-Gapped Monday Ingestion • ChatGPT Business Gateways</p>
     </div>
     <div class="meta-card">
